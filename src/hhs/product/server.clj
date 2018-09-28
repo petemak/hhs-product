@@ -1,4 +1,4 @@
-(ns product.server
+(ns hhs.product.server
   (:gen-class) ; for -main method in uberjar
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
