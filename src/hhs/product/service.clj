@@ -1,8 +1,9 @@
-(ns product.service
+(ns hhs.product.service
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
-            [ring.util.response :as ring-resp]))
+            [ring.util.response :as ring-resp]
+            [hhs.product.core :as core]))
 
 (defn about-page
   [request]
@@ -28,9 +29,9 @@
 ;; 
 (def routes #{["/" :get (conj common-interceptors `home-page)]
               ["/about" :get (conj common-interceptors `about-page)]
-              ["/products/:id" :get  (conj common-interceptors `core/auth `core/id-validator `core/find-product)   :route-name :find-product]
-              ["/products/:id" :put  (conj common-interceptors `core/auth `core/id-validator `core/save-product)   :route-name :save-product]
-              ["/products/:id" :post (conj common-interceptors `core/auth `core/id-validator 'core/create-product) :route-name :create-producet]})
+              ["/products/:id" :get  (conj common-interceptors `core/auth `core/product-id `core/find-product)   :route-name :find-product]
+              ["/products/:id" :put  (conj common-interceptors `core/auth `core/product-id `core/save-product)   :route-name :save-product]
+              ["/products/:id" :post (conj common-interceptors `core/auth `core/product-id 'core/create-product) :route-name :create-producet]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
