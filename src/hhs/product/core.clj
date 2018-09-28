@@ -30,7 +30,7 @@
 ;;---------------------------------------
 (defn request-params
   "Extract path, query and form parameters inot a single map. "
-  [context]
+  [contextpp]
   (let [params (merge (-> context :request :form-params)
                       (-> context :request :query-params)
                       (-> context :request :path-params))
