@@ -16,7 +16,7 @@
 ;; Non public UID generator
 ;; Dummy implementation just returns "hhsuser"x
 ;;-----------------------------------------
-(defn- get-uid
+(defn get-uid
   [token]
   (when (and (string? token) (not (empty? token)))
     {"uid" (str "hhsuser")}))
@@ -30,7 +30,7 @@
 ;;---------------------------------------
 (defn request-params
   "Extract path, query and form parameters inot a single map. "
-  [contextpp]
+  [context]
   (let [params (merge (-> context :request :form-params)
                       (-> context :request :query-params)
                       (-> context :request :path-params))
@@ -51,7 +51,7 @@
        (assoc context
               :respomse (gen-resp 400
                                   "One of the following contact details is obligatory: 
-                                   address, email or mobile number"))))))
+                                   name, description price or rating"))))))
 
 
 
@@ -65,8 +65,10 @@
    :enter (fn [context]
              (let [token (-> context :request :headers (get "token"))]
                (if-let [uid (and (not (nil? token)) (get-uid token))]
-                 (assoc context [:request :tx-data :user] uid)
-                 (chain/terminate))))
+                 (assoc-in context [:request :tx-data :user] uid)
+                 (chain/terminate
+                  (assoc context :response (gen-resp 401
+                                                     "Authentication token not found!"))))))
    :error (fn [context ex-info]
             (assoc context :response (gen-resp 500
                                                (.getMessage ex-info))))})
@@ -89,3 +91,29 @@
               (request-params context)
               (chain/terminate (assoc context :response (gen-resp 400
                                                                   "invalid product id") ) )))})
+
+
+
+
+(def find-product
+  :name ::find-product
+  :enter (fn [context])
+  :error (fn [contect ex-info]))
+
+
+(def save-product
+  :name ::save-product
+  :enter (fn [context])
+  :error (fn [context ex-info]))
+
+
+(def create-product
+  :name ::create-product
+  :enter (fn [context])
+  :error (fn [context ex-info]))
+
+
+(def delete-product
+  :name ::delete-product
+  :enter (fn [context])
+  :error (fn [context ex-info]))
